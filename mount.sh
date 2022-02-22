@@ -1,11 +1,5 @@
-for p in $(getargs overlayroot=); do
-
-if [ "${p}" -eq 1 ]  then;
-	mkdir -p /run/overlayroot/{u,w}
+	mkdir -p /run/overlayroot/{u,w,rootfs}
+	chmod -R 700 /run/overlayroot
+	mount --bind /sysroot /run/overlayroot/rootfs
 	mount -t overlay overlayroot -o lowerdir=/sysroot,upperdir=/run/overlayroot/u,workdir=/run/overlayroot/w /sysroot
-	echo "Ovelay root mounted"
 	return 0
-else 
-	echo "Overlayroot not enabled"
-	return 0
-fi
