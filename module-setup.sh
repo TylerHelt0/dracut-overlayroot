@@ -9,5 +9,5 @@ depends() {
 }
 
 install () {
-    inst_hook cleanup 99 $moddir/mount.sh
+    inst_hook pre-pivot 50 $moddir/mount.sh
     }
