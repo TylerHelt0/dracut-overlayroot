@@ -1,31 +1,33 @@
-if ! getargbool 1 overlayroot -d -n rd_NO_OVERLAY; then
-	info "Overlayroot not activated"
-	return 0
-else
-	info "Activating Overlayroot"
-	if ! mkdir -p /run/overlayroot/{u,w,rootfs,update}; then
-		info "Overlayroot folder creation failed"
+OVERLAY=/run/overlayroot
+
+if getargbool 0 overlayroot; then
+	info "Overlayroot: Activating Overlayroot"
+	if ! mkdir -p $OVERLAY/{u,w,rootfs}; then
+		warn "Overlayroot: overlay folder creation failed"
 		return 1
 	fi
 
-	info  "Moving sysroot to /run/overlayroot"
+	info  "Overlayroot: Moving sysroot to /run/overlayroot/rootfs"
 	if mount --make-private /; then   
-		if ! mount --move /sysroot /run/overlayroot/rootfs; then 
-			info "Moving sysroot failed (2)"
+		if ! mount --move /sysroot $OVERLAY/rootfs; then 
+			warn "Overlayroot: Moving sysroot failed (2)"
 			return 1
 		fi
 	else
-		info "Moving sysroot failed (1)" 
+		warn "Overlayroot: Moving sysroot failed (1)" 
 		return 1
 	fi
 			
-
-	info "Mounting Overlayroot"
-	if mount -t overlay overlayroot -o lowerdir=/run/overlayroot/rootfs,upperdir=/run/overlayroot/u,workdir=/run/overlayroot/w /sysroot; then
-		info "Overlayroot mount failed"
+	info "Overlayroot: Mounting overlay"
+	if ! mount -t overlay overlayroot -o lowerdir=$OVERLAY/rootfs,upperdir=$OVERLAY/u,workdir=$OVERLAY/w /sysroot; then
+		warn "Overlayroot mount failed"
 		return 1
 	fi
 	
 	info "Overlayroot mounted successfully probably"
+	return 0
+
+else
+	info "Overlayroot: not activated. Check cmdline"
 	return 0
 fi
