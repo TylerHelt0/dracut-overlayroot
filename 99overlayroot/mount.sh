@@ -2,7 +2,7 @@ OVERLAY=/run/overlayroot
 
 if getargbool 0 overlayroot; then
 	info "Overlayroot: Activating Overlayroot"
-	if ! mkdir -p $OVERLAY/{u,w,rootfs}; then
+	if ! mkdir -p $OVERLAY/{u,w,rootfs} && chmod 750 $OVERLAY -R; then
 		warn "Overlayroot: overlay folder creation failed"
 		return 1
 	fi
