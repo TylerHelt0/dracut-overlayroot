@@ -10,3 +10,4 @@ To enable the module, place it into `/usr/lib/dracut/modules.d` and add `overlay
 
 The root filesystem is moved `/run/overalyroot/rootfs`, the upper and lower dirs of the overlay are also in the overlayroot folder. 
 
+While this was designed for Arch Linux, it will work for any system that uses Dracut as initramfs.
